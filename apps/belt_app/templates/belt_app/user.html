@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'belt_app/style.css' %}">
+
+</head>
+<body>
+	<a href="/returnQuotes">Quote-land</a>
+	<a href="/logout">Logout</a>
+	<h1>Posted by {{ user.name }} </h1>
+	<p>Count: {{ user.favorites.all|length }}</p>
+
+	{% for favorite in favorites %}
+		<div>
+			<span class="user-display">{{ favorite.author }}:</span> 
+			{{ favorite.quote_text }}
+		</div>
+	{% endfor %}
+</body>
+</html>

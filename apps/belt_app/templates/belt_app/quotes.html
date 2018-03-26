@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quotes</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'belt_app/style.css' %}" media="screen" title="no title"  charset="utf-8">
+</head>
+<body>
+	<h1>Welcome, {{ user.name }}</h1>
+    <form action="/logout">
+        {% csrf_token %}
+        <input type="submit" value="Log out">
+    </form>
+    
+	<p>Quotes:</p>
+	<div id="quote-list">
+		{% for quote in quotes %}
+			<div class="a-quote">
+				<p>{{ quote.author }}:{{ quote.quote_text }}</p>
+				<p>posted by:<a href="/users/{{quote.user_quote.id}}">{{quote.user_quote.name}}</a></p>
+				<a href="/addFavorite/{{quote.id}}">Add to My List</a>
+			</div>
+		{% endfor %}
+	</div>
+
+	<p>Your Favorite Quotes:</p>
+	<div id="favorite-quotes">
+	  {% for favorite in favorites %}
+	  		<div class="a-quote">
+			    <p>{{ favorite.author }}:{{ favorite.quote_text }}</p>
+			   	<p>posted by:<a href="/users/{{favorite.user_quote.id}}">{{ favorite.user_quote.name }}</a></p>
+				<a href="/removeFavorite/{{favorite.id}}">Remove from My List</a>
+			</div>
+	  {% endfor %}
+	 </div>
+	{% if messages %}
+		{% for message in messages%}
+			{% if 'message' in message.tags %}
+				<p>{{ message }}</p>
+			{% endif %}
+		{%endfor%}
+	{% endif %}
+
+	 <form action='{% url 'createQuote' %}' method="post">
+		{% csrf_token %}
+		Add a Quote:<br><br>
+		<label>Quoted By:</label>
+		<input type="text" name="author">
+		<label>Message:</label>
+		<textarea name="quote_text"></textarea>
+		<input type="submit" value="Submit">
+	</form>
+</body>
+</html>

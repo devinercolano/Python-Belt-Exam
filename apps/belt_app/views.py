@@ -8,33 +8,36 @@ from django.core.urlresolvers import reverse
 def index(request):
     return render(request, 'belt_app/index.html')
 
+def success(request):
+	return render(request, 'belt_app/quotes.html')
+
 def register(request):
     response = User.objects.userValidation(request.POST)
     
     if len(response):
         for tag,error in response.iteritems():
             messages.error(request, error, extra_tags=tag)
-        return redirect('index')
+        return redirect('/')
 
     if User.objects.userValidation(request.POST):
         errorFlag = True
-        return redirect ('returnQuotes')
+        return redirect ('/returnQuotes')
     else:
         errorFlag = False
         request.session['user_id'] = User.objects.get(email = request.POST['email']).id
-        return redirect('index')
+        return redirect('/')
 
 def login(request):
     response = User.objects.verifyUserLogin(request.POST)
     if response['errorFlag'] == True:
         for tag,error in response.iteritems():
             messages.error(request, error, extra_tags=tag)
-        return redirect('index')
+        return redirect('/')
     else:
         for tag, error in response.iteritems():
             messages.error(request, error, extra_tags=tag)
         request.session['user_id'] = User.objects.get(email = request.POST['email']).id
-        return  render(request, 'belt_app/quotes.html')
+        return  redirect('/returnQuotes')
 
 def returnUser(request):
 	return User.objects.get(id = request.session['user_id'])
@@ -99,5 +102,5 @@ def showUser(request, id):
 
 def logout(request):
     request.session.flush()
-    return redirect ('index')
+    return redirect ('/')
 
